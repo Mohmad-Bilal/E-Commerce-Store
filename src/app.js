@@ -2,6 +2,7 @@ const express = require("express");
 require("../db/mongoose");
 const loginRouter = require("../routes/login");
 const registerRouter = require("../routes/register");
+// require("dotenv").config();
 
 const port = process.env.PORT || 3000;
 

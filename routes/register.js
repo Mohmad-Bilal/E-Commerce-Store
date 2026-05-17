@@ -14,11 +14,11 @@ router.post("/register", async (req, res) => {
 
     res.status(200).send(user);
   } catch (err) {
-    res.status(404).send(err);
+    res.status(404).send(err.message);
   }
 });
 
-router.get("/register", auth, async (req, res) => {
+router.get("/users", auth, async (req, res) => {
   try {
     const user = await User.find({});
 
@@ -27,7 +27,7 @@ router.get("/register", auth, async (req, res) => {
     res.status(404).send(err);
   }
 });
-router.get("/register/:id", auth, async (req, res) => {
+router.get("/users/:id", auth, async (req, res) => {
   try {
     const _id = req.params.id;
     const user = await User.findById({ _id });
