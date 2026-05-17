@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
+// require("dotenv");
+// require("dotenv").config();
 // const { default: isEmail } = require("validator/lib/isEmail");
 
 const userSchema = new mongoose.Schema({
@@ -16,7 +18,7 @@ const userSchema = new mongoose.Schema({
     require: true,
     unique: true,
     validate(value) {
-      if (validator.isEmail(value)) {
+      if (!validator.isEmail(value)) {
         throw new Error("Email is invalid");
       }
     },
@@ -26,8 +28,10 @@ const userSchema = new mongoose.Schema({
     trim: true,
     require: true,
     validate(value) {
-      if (validator.isStrongPassword(value)) {
-        throw new Error("your password must contain");
+      if (!validator.isStrongPassword(value)) {
+        throw new Error(
+          "your password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 symbol",
+        );
       }
     },
   },
@@ -71,10 +75,11 @@ userSchema.statics.findByEmAndPass = async function (em, pass) {
 };
 
 userSchema.methods.generateToken = async function () {
+  const secret = process.env.JWT_SECRET || "neroSan55";
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
+  const token = jwt.sign({ _id: user._id.toString() }, secret);
   user.tokens = user.tokens.concat(token);
-  await user.save;
+  await user.save();
   return token;
 };
 

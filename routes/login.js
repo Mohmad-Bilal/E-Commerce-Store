@@ -9,6 +9,7 @@ router.post("/login", async (req, res) => {
     const user = await User.findByEmAndPass(req.body.email, req.body.password);
 
     const token = await user.generateToken();
+    res.status(200).send({ user, token });
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -16,7 +17,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/profile", auth, async (req, res) => {
+router.get("/profile", auth, async (req, res) => {
   try {
     const user = await User.find({});
 
