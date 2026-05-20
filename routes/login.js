@@ -2,9 +2,10 @@ const express = require("express");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
+const loginValidation = require("../middleware/login-validation");
 const router = express.Router();
 
-router.post("/login", async (req, res) => {
+router.post("/login", loginValidation, async (req, res) => {
   try {
     const user = await User.findByEmAndPass(req.body.email, req.body.password);
 

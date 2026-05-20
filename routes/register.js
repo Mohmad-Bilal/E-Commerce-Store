@@ -3,12 +3,15 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
 const router = express.Router();
+const registerValidation = require("../middleware/register-validation");
 
-router.post("/register", async (req, res) => {
+router.post("/register", registerValidation, async (req, res) => {
   try {
     const user = new User(req.body);
 
     const token = await user.generateToken();
+
+    delete req.body.confirmPassword;
 
     await user.save();
 
