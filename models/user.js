@@ -3,7 +3,7 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 // require("dotenv");
-// require("dotenv").config();
+require("dotenv").config();
 // const { default: isEmail } = require("validator/lib/isEmail");
 
 const userSchema = new mongoose.Schema({
@@ -44,6 +44,16 @@ const userSchema = new mongoose.Schema({
     trim: true,
     default: "Unknown",
   },
+  avatar: {
+    type: Buffer,
+  },
+  cloudinary_id: {
+    type: String,
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
   tokens: [
     {
       type: String,
@@ -75,9 +85,12 @@ userSchema.statics.findByEmAndPass = async function (em, pass) {
 };
 
 userSchema.methods.generateToken = async function () {
-  const secret = process.env.JWT_SECRET || "neroSan55";
+  const secret = process.env.JWT_SECRET;
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, secret);
+  const token = jwt.sign(
+    { _id: user._id.toString(), isAdmin: user.isAdmin },
+    secret,
+  );
   user.tokens = user.tokens.concat(token);
   await user.save();
   return token;
