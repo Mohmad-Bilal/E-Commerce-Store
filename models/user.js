@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
     default: "Unknown",
   },
   avatar: {
-    type: Buffer,
+    type: String,
   },
   cloudinary_id: {
     type: String,
